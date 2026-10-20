@@ -1,3 +1,4 @@
+
 package com.tpfintech.tpcuentas.service;
 
 import com.tpfintech.tpcuentas.exception.ReglaNegocioException;
@@ -32,8 +33,7 @@ class CuentaServiceTest {
         @Mock
         private UsuarioRepository usuarioRepository;
 
-        // Dejo que Mockito inyecte los repositorios simulados en el servicio que estoy
-        // probando.
+        // Dejo que Mockito inyecte las dependencias simuladas en el servicio.
         @InjectMocks
         private CuentaService cuentaService;
 
@@ -42,8 +42,8 @@ class CuentaServiceTest {
 
         @BeforeEach
         void setUp() {
-                // Reutilizo los mismos datos iniciales para mantener las pruebas independientes
-                // y consistentes.
+                // Reutilizo datos iniciales para mantener las pruebas independientes y
+                // consistentes.
                 usuario = new Usuario(
                                 "Juan",
                                 "Perez",
@@ -65,20 +65,20 @@ class CuentaServiceTest {
                                 .thenReturn(false);
                 when(usuarioRepository.findById(1L))
                                 .thenReturn(Optional.of(usuario));
-                when(cuentaRepository.save(any(Cuenta.class)))
+                when(cuentaRepository.saveAndFlush(any(Cuenta.class)))
                                 .thenAnswer(invocation -> invocation.getArgument(0));
 
                 Cuenta resultado = cuentaService.crear(cuenta, 1L);
 
-                // Compruebo tanto los datos de la cuenta como su relación con el usuario.
+                // Compruebo los datos de la cuenta y su relación con el usuario.
                 assertNotNull(resultado);
                 assertEquals("CTA-000001", resultado.getNumeroCuenta());
                 assertEquals(new BigDecimal("15000.00"), resultado.getSaldo());
                 assertEquals(EstadoCuenta.ACTIVA, resultado.getEstado());
                 assertSame(usuario, resultado.getUsuario());
 
-                // Verifico que el servicio haya solicitado guardar la cuenta creada.
-                verify(cuentaRepository).save(cuenta);
+                // Verifico que se invoque el método de persistencia utilizado por el servicio.
+                verify(cuentaRepository).saveAndFlush(cuenta);
         }
 
         @Test
@@ -93,8 +93,8 @@ class CuentaServiceTest {
                                 ReglaNegocioException.class,
                                 () -> cuentaService.crear(cuenta, 1L));
 
-                // Me aseguro de que no se guarde la cuenta ni se consulte al usuario.
-                verify(cuentaRepository, never()).save(any(Cuenta.class));
+                // Verifico que no se intente persistir una cuenta inválida.
+                verify(cuentaRepository, never()).saveAndFlush(any(Cuenta.class));
                 verifyNoInteractions(usuarioRepository);
         }
 
@@ -111,7 +111,7 @@ class CuentaServiceTest {
                                 () -> cuentaService.crear(cuenta, 999L));
 
                 // Evito que se persista una cuenta si falla la búsqueda del usuario.
-                verify(cuentaRepository, never()).save(any(Cuenta.class));
+                verify(cuentaRepository, never()).saveAndFlush(any(Cuenta.class));
         }
 
         @Test
@@ -128,7 +128,8 @@ class CuentaServiceTest {
                                 ReglaNegocioException.class,
                                 () -> cuentaService.crear(cuenta, 1L));
 
-                verify(cuentaRepository, never()).save(any(Cuenta.class));
+                // Verifico que la cuenta no llegue a persistirse.
+                verify(cuentaRepository, never()).saveAndFlush(any(Cuenta.class));
         }
 
         @Test
@@ -136,7 +137,7 @@ class CuentaServiceTest {
                 when(cuentaRepository.findById(999L))
                                 .thenReturn(Optional.empty());
 
-                // Verifico que la búsqueda comunique el error cuando la cuenta no existe.
+                // Verifico que la búsqueda informe cuando la cuenta no existe.
                 assertThrows(
                                 RecursoNoEncontradoException.class,
                                 () -> cuentaService.buscarPorId(999L));

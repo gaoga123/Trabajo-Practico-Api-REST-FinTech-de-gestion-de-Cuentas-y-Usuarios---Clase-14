@@ -6,7 +6,7 @@ spring:
     url: "jdbc:mysql://localhost:3306/tp_fintech?createDatabaseIfNotExist=true"
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: contrasenia123
+    password: root
 
   jpa:
     hibernate:

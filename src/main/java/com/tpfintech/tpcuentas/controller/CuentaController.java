@@ -41,6 +41,8 @@ public class CuentaController {
 
         private final CuentaService cuentaService;
 
+        // Inyecto el servicio por constructor para mantener explícita la dependencia
+        // del controlador.
         public CuentaController(CuentaService cuentaService) {
                 this.cuentaService = cuentaService;
         }
@@ -82,6 +84,7 @@ public class CuentaController {
         public ResponseEntity<CuentaResponse> crear(
                         @Valid @RequestBody CuentaRequest request) {
 
+                // Transformo el DTO de entrada en una entidad y delego las reglas al servicio.
                 Cuenta cuenta = new Cuenta(
                                 request.numeroCuenta(),
                                 request.tipo(),
@@ -91,6 +94,7 @@ public class CuentaController {
 
                 Cuenta creada = cuentaService.crear(cuenta, request.usuarioId());
 
+                // Devuelvo 201 Created porque la solicitud generó un recurso nuevo.
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(convertir(creada));
         }
@@ -124,6 +128,8 @@ public class CuentaController {
         @GetMapping
         public ResponseEntity<List<CuentaResponse>> listarTodas() {
 
+                // Convierto cada entidad a DTO para no exponer directamente los modelos de
+                // persistencia.
                 List<CuentaResponse> cuentas = cuentaService.listarTodas()
                                 .stream()
                                 .map(this::convertir)
@@ -188,6 +194,8 @@ public class CuentaController {
         public ResponseEntity<List<CuentaResponse>> listarPorUsuario(
                         @Parameter(name = "usuarioId", description = "Identificador único del usuario propietario.", required = true, example = "1", schema = @Schema(type = "integer", format = "int64", minimum = "1")) @PathVariable Long usuarioId) {
 
+                // Mantengo la búsqueda en el servicio y adapto el resultado al formato público
+                // de la API.
                 List<CuentaResponse> cuentas = cuentaService
                                 .listarPorUsuario(usuarioId)
                                 .stream()
@@ -243,6 +251,7 @@ public class CuentaController {
                                         }
                                         """))) @Valid @RequestBody CuentaRequest request) {
 
+                // Construyo los datos recibidos sin resolver acá las reglas de actualización.
                 Cuenta datos = new Cuenta(
                                 request.numeroCuenta(),
                                 request.tipo(),
@@ -284,6 +293,8 @@ public class CuentaController {
 
                 cuentaService.eliminar(id);
 
+                // Uso 204 No Content para indicar que la operación terminó sin devolver un
+                // cuerpo.
                 return ResponseEntity.noContent().build();
         }
 
@@ -294,6 +305,8 @@ public class CuentaController {
          * @return representación de la cuenta para el consumidor.
          */
         private CuentaResponse convertir(Cuenta cuenta) {
+                // Centralizo la conversión para mantener uniforme la respuesta de todos los
+                // endpoints.
                 return new CuentaResponse(
                                 cuenta.getId(),
                                 cuenta.getNumeroCuenta(),

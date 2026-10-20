@@ -1,4 +1,4 @@
-# API REST de Usuarios y Cuentas Fintech
+#TP FINTECH: API REST de Usuarios y Cuentas Fintech
 
 API REST desarrollada con Java y Spring Boot para administrar usuarios y sus cuentas bancarias. El proyecto forma parte de un trabajo práctico de FinTech y aplica conceptos de programación orientada a objetos, persistencia relacional, validación de datos, manejo de excepciones, documentación OpenAPI y pruebas automatizadas.
 
@@ -10,7 +10,11 @@ API REST desarrollada con Java y Spring Boot para administrar usuarios y sus cue
 - Consulta de las cuentas asociadas a un usuario.
 - Persistencia relacional mediante MySQL y Spring Data JPA.
 - Validación de solicitudes mediante Jakarta Validation.
-- Manejo de excepciones de negocio y recursos inexistentes.
+- Manejo de excepciones personalizadas para representar errores de negocio y recursos inexistentes.
+- Uso de bloques `try/catch` en operaciones de persistencia para gestionar violaciones de integridad de datos.
+- Manejo centralizado de excepciones HTTP mediante `@RestControllerAdvice`.
+- Respuestas de error estructuradas en formato JSON, con código HTTP, descripción y mensaje.
+- Validación de solicitudes mediante Jakarta Validation y manejo de datos inválidos.
 - Respuestas HTTP y DTO específicos para las operaciones de la API.
 - Documentación interactiva mediante Swagger UI y OpenAPI.
 - Colección de Postman con solicitudes y pruebas HTTP.
@@ -508,6 +512,51 @@ La API contempla excepciones de negocio y de recursos inexistentes. El manejador
 | `409 Conflict` | Conflicto con las reglas de negocio | Email, teléfono o número de cuenta duplicado |
 
 El formato concreto del cuerpo de error depende de la implementación del manejador global de excepciones.
+
+### Ejemplo de respuesta de error
+
+Al consultar una cuenta inexistente, la API puede devolver una respuesta `404 Not Found` con la siguiente estructura:
+
+```json
+{
+  "fecha": "2026-10-17T19:00:00",
+  "estado": 404,
+  "error": "Not Found",
+  "mensaje": "No se encontró la cuenta con ID: 999"
+}
+```
+
+La fecha y el identificador son ilustrativos. El mensaje concreto depende de la operación que haya generado el error.
+
+## Manejo de errores y excepciones
+
+La API implementa mecanismos de manejo de errores para responder de forma controlada ante situaciones inválidas, recursos inexistentes y conflictos con las reglas de negocio.
+
+### Excepciones personalizadas
+
+- `RecursoNoEncontradoException`: representa la ausencia de un usuario o una cuenta solicitados.
+- `ReglaNegocioException`: representa el incumplimiento de una regla de negocio.
+
+### Uso de `try/catch`
+
+En `CuentaService`, los métodos de creación y actualización de cuentas utilizan bloques `try/catch` para capturar `DataIntegrityViolationException` durante la persistencia.
+
+Cuando se produce una violación de integridad de datos, el servicio la traduce a una excepción de negocio, evitando exponer directamente detalles internos de la base de datos al consumidor de la API.
+
+### Manejo centralizado
+
+La clase `GlobalExceptionHandler`, anotada con `@RestControllerAdvice`, centraliza el tratamiento de las excepciones y las transforma en respuestas HTTP.
+
+Entre los casos gestionados se encuentran:
+
+- Recursos inexistentes: `404 Not Found`.
+- Reglas de negocio incumplidas: `409 Conflict`.
+- Errores de validación o solicitudes con formato incorrecto: `400 Bad Request`.
+- Errores inesperados: `500 Internal Server Error`.
+
+Las respuestas de error utilizan un formato JSON uniforme con información sobre la fecha, el código HTTP, la descripción del error y un mensaje explicativo.
+
+Este enfoque separa la lógica de negocio del tratamiento HTTP y facilita mantener respuestas consistentes en los distintos endpoints.
 
 ## Probar con Postman
 
