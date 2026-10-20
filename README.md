@@ -1,6 +1,10 @@
-#TP FINTECH: API REST de Usuarios y Cuentas Fintech
+# TP FINTECH: API REST de Usuarios y Cuentas Fintech - Clase 14
 
-API REST desarrollada con Java y Spring Boot para administrar usuarios y sus cuentas bancarias. El proyecto forma parte de un trabajo práctico de FinTech y aplica conceptos de programación orientada a objetos, persistencia relacional, validación de datos, manejo de excepciones, documentación OpenAPI y pruebas automatizadas.
+- Fecha de Entrega: 21-10-2026
+
+## Descripción
+
+API REST desarrollada con Java y Spring Boot para administrar usuarios y sus cuentas bancarias. El proyecto forma parte de un trabajo práctico de la Diplomatura en Desarrollo de Software FinTech: IA y Microservicios, y aplica conceptos de programación orientada a objetos, persistencia relacional, validación de datos, manejo de excepciones, documentación OpenAPI y pruebas automatizadas.
 
 ## Características
 
@@ -72,7 +76,7 @@ Antes de iniciar la aplicación, se debe verificar que:
 
 La URL de conexión utiliza `createDatabaseIfNotExist=true`. Este parámetro permite que el controlador JDBC intente crear la base de datos cuando no existe, siempre que el usuario de MySQL disponga de los permisos correspondientes.
 
-> **Seguridad:** no se deben publicar contraseñas reales ni otras credenciales en el repositorio. Para distribuir el proyecto, se recomienda utilizar variables de entorno o una configuración local excluida del control de versiones. Las credenciales tampoco deben incluirse en capturas de pantalla, documentación pública ni mensajes de commit.
+> **Seguridad:** Contraseña establecida sólo para fines educativos y de evaluación. No se deben publicar contraseñas reales ni otras credenciales en el repositorio. Las credenciales tampoco deben incluirse en capturas de pantalla, documentación pública ni mensajes de commit.
 
 ### Estrategia de persistencia
 
@@ -84,14 +88,12 @@ Esta configuración resulta práctica durante el desarrollo académico, pero no 
 
 ### 1. Obtener el proyecto
 
-Si el proyecto se encuentra en un repositorio Git, ejecute:
+Ya que el proyecto se encuentra en un repositorio Git, ejecute:
 
 ```powershell
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/gaoga123/Trabajo-Practico-Api-REST-FinTech-de-gestion-de-Cuentas-y-Usuarios---Clase-14.git
 cd tp-api-cuentas
 ```
-
-Reemplace `<URL_DEL_REPOSITORIO>` por la dirección real del repositorio.
 
 Si el código fuente ya se encuentra disponible localmente, abra una terminal en la carpeta raíz del proyecto.
 
@@ -696,24 +698,6 @@ postman/
 - **Carga diferida de relaciones:** evita recuperar automáticamente entidades relacionadas cuando no se necesitan.
 - **Pruebas con Mockito:** permiten aislar los servicios de la base de datos y verificar sus reglas de negocio.
 
-## Alcance y mejoras futuras
+## Alcance
 
 Este proyecto es una API académica de demostración. No debe considerarse un sistema bancario listo para producción.
-
-Entre las posibles mejoras se encuentran:
-
-- Autenticación y autorización para proteger los recursos.
-- Migraciones de base de datos versionadas y controladas.
-- Gestión segura de credenciales mediante variables de entorno.
-- Restricciones de integridad adicionales y validaciones consistentes en la base de datos.
-- Paginación y ordenamiento de listados.
-- Pruebas de integración de controladores y persistencia.
-- Pruebas adicionales para actualizaciones, eliminaciones y casos límite.
-- Registro estructurado de eventos, métricas y configuración específica por entorno.
-- Reglas transaccionales más completas para operaciones financieras.
-- Validaciones adicionales sobre los estados y las transiciones permitidas de las cuentas.
-- Un contrato de errores uniforme y documentado para todas las operaciones.
-
-## Licencia
-
-Proyecto desarrollado con fines educativos. Si se decide distribuirlo bajo una licencia específica, se debe incorporar aquí el texto correspondiente y el archivo de licencia.
