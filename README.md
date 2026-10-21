@@ -91,7 +91,7 @@ Esta configuración resulta práctica durante el desarrollo académico, pero no 
 Ya que el proyecto se encuentra en un repositorio Git, ejecute:
 
 ```powershell
-git clone https://github.com/gaoga123/Trabajo-Practico-Api-REST-FinTech-de-gestion-de-Cuentas-y-Usuarios---Clase-14.git
+git clone https://github.com/gaoga123/TPApiFinTechClase14.git
 cd tp-api-cuentas
 ```
 
